@@ -1,8 +1,7 @@
 # Terraform for AWS 
-In which I learn how to use Terraform!
-create_webserver_instance.tf is useful for standing up a basic web server
+This is a super basic Terraform stack to stand up a web server for AWS.
 
-In order to use this terraform stack, you will need to be subscribed to the Bitnami NGIX servir AMI.
+In order to use this terraform stack, you will need to be subscribed to the Bitnami NGIX server AMI.
 [You can find that AMI here](https://aws.amazon.com/marketplace/pp/B00NPHKI3Y)
 
 ## Installation Instructions: 

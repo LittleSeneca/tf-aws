@@ -13,10 +13,13 @@ provider "aws" {
 }
 
 resource "aws_instance" "webserver" {
-    ami = "ami-0be2609ba883822e"
+    ami = "ami-049f3725664f54adb"
     instance_type = "t2.micro"
     key_name = "webserver"
     security_groups = [ "webserver" ]
+    tags = {
+      Name = "webserver"
+    }
 }
 
 resource "aws_security_group" "webserver" {
@@ -59,10 +62,13 @@ resource "aws_security_group" "webserver" {
 }
 
 resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_instance.webserver.id
-  allocation_id = aws_eip.webserver.id
+    instance_id   = aws_instance.webserver.id
+    allocation_id = aws_eip.webserver.id
 }
 
 resource "aws_eip" "webserver" {
-  vpc = true
+    vpc = true
+    tags = {
+        Name = "webserver"
+    }
 }

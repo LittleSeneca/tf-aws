@@ -1,5 +1,8 @@
 #ignore anything in the .terraform folder
 .terraform/**
 
-#ignore anything with a lock file
+#ignore anything with a lock file ending
 *.lock.hcl
+
+#ignore anything with a tfstase file ending.
+*.tfstate

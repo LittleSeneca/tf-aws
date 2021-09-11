@@ -1,0 +1,79 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "Security Group providing access between the Syxsense Agent and Cloud Console",
+    "Parameters" : 
+    { 
+    	"VPC" : 
+    	{
+    		"Type" : "AWS::EC2::VPC::Id",
+    		"Description" : "VPC where the Security Group will belong"
+    	},
+    	"Name" : 
+    	{
+    		"Type" : "String",
+    		"Description" : "Syxesense-SG"
+    	},
+    	"Description" : 
+    	{
+    		"Type" : "String",
+    		"Description" : "Security Group providing access between the Syxsense Agent and Cloud Console"
+    	}
+    },
+    "Resources" : 
+    {
+    	"SyxsenseSG" : 
+    	{
+    		"Type" : "AWS::EC2::SecurityGroup",
+    		"Properties" : 
+    		{
+    			"GroupDescription" : {"Ref" : "Description"},
+    			"VpcId" : { "Ref" : "VPC" },
+                "SecurityGroupIngress" : [
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "80",
+                    "ToPort" : "80"
+                },
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "443",
+                    "ToPort" : "443"
+                },
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "135",
+                    "ToPort" : "135"
+                },
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "139",
+                    "ToPort" : "139"
+                },
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "145",
+                    "ToPort" : "145"
+                },
+                {
+                    "IpProtocol" : "tcp",
+                    "FromPort" : "15341",
+                    "ToPort" : "15345"
+                },
+                {
+                    "IpProtocol" : "udp",
+                    "FromPort" : "15344",
+                    "ToPort" : "15345"
+                }
+                ]
+    		}
+    	}
+    },
+    "Outputs" : 
+    {
+        "SecurityGroupID" : 
+        {
+            "Description" : "Security Group ID",
+            "Value" : { "Ref" : "SyxsenseSG" }
+        }
+    }
+}

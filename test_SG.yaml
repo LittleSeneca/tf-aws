@@ -1,0 +1,98 @@
+Description: >
+  This template contains the security group required for accessing hosted resources.
+  Syxsense is fully hosted in Azure and does not require any inbound rules to be used.
+Parameters:
+  EnvironmentName:
+    Description: The name of the security groug being created to access Syxsense cloud resources. 
+    Type: String
+  InstanceIP:
+    Description: The IP Address of your Syxsense Console Instance, e.g *Testinstance*.cloudmanagementsuite.com
+    Type: String
+  BlobStoreIP:
+    Description: The IP Address of the Syxsense Cloud Storage location verismic.blob.core.windows.net
+    Type: String
+  CiscoStoreIP:
+    Description: The IP Address of Cisco Dependancies for vRep configuration, e.g ciscobinary.openh264.org
+    Type: String
+  LocalNetworkIP:
+    Description: The CIDR of the VPC which this Security Group is being provisioned for. Generally in the form 10.0.0.0/16
+    Type: String 
+  VPC:
+    Type: AWS::EC2::VPC::Id
+    Description: Choose which VPC the security groups should be deployed to
+
+Resources:
+  SyxsenseInternetSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Whitelists required cloud sites for agent communication back to the console.
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        CidrIp: !Sub ${InstanceIP}/32
+        FromPort: '443'
+        ToPort: '443'
+      - IpProtocol: tcp
+        CidrIp: !Sub ${InstanceIP}/32
+        FromPort: '80'
+        ToPort: '80'
+      - IpProtocol: tcp
+        CidrIp: !Sub ${BlobStoreIP}/32
+        FromPort: '443'
+        ToPort: '443'
+      - IpProtocol: tcp
+        CidrIp: !Sub ${BlobStoreIP}/32
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: !Sub ${CiscoStoreIP}/32
+        FromPort: '443'
+        ToPort: '443'
+      - IpProtocol: tcp
+        CidrIp: !Sub ${CiscoStoreIP}/32
+        FromPort: '80'
+        ToPort: '80'
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-CloudWhitelist
+
+  SyxsenseLocalSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Whitelists local communications between agented devices.
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '80'
+        ToPort: '80'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '135'
+        ToPort: '135'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '139'
+        ToPort: '139'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '443'
+        ToPort: '443'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '445'
+        ToPort: '445'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '22'
+        ToPort: '22'
+      - IpProtocol: tcp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '51341'
+        ToPort: '51345'
+      - IpProtocol: udp
+        CidrIp: !Ref LocalNetworkIP
+        FromPort: '51344'
+        ToPort: '51345'
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-LocalWhitelist
